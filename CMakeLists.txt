@@ -10,10 +10,13 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
-# Core library (header-only for now; .cpp files get added in the next commits).
-add_library(orderbook INTERFACE)
-target_include_directories(orderbook INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_compile_features(orderbook INTERFACE cxx_std_20)
+# Core library
+add_library(orderbook src/order_book.cpp)
+target_include_directories(orderbook PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_compile_features(orderbook PUBLIC cxx_std_20)
+if(NOT MSVC)
+  target_compile_options(orderbook PRIVATE -Wall -Wextra -Wpedantic)
+endif()
 
 # Tests (GoogleTest via FetchContent)
 include(FetchContent)
