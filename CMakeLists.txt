@@ -10,6 +10,13 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
+# Optional sanitizers: cmake -S . -B build-san -DCMAKE_BUILD_TYPE=Debug -DORDERBOOK_SANITIZE=ON
+option(ORDERBOOK_SANITIZE "Build with AddressSanitizer + UBSan" OFF)
+if(ORDERBOOK_SANITIZE AND NOT MSVC)
+  add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
+  add_link_options(-fsanitize=address,undefined)
+endif()
+
 # Core library
 add_library(orderbook src/order_book.cpp)
 target_include_directories(orderbook PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -36,3 +43,12 @@ if(NOT MSVC)
   target_compile_options(test_order_book PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 gtest_discover_tests(test_order_book)
+
+# Property test: OrderBook vs naive reference on random streams
+add_executable(test_property tests/test_property.cpp)
+target_include_directories(test_property PRIVATE tests)
+target_link_libraries(test_property PRIVATE orderbook GTest::gtest_main)
+if(NOT MSVC)
+  target_compile_options(test_property PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+gtest_discover_tests(test_property)
