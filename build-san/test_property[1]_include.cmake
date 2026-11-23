@@ -1,5 +1,0 @@
-if(EXISTS "/home/emili/orderbook-engine/build-san/test_property[1]_tests.cmake")
-  include("/home/emili/orderbook-engine/build-san/test_property[1]_tests.cmake")
-else()
-  add_test(test_property_NOT_BUILT test_property_NOT_BUILT)
-endif()

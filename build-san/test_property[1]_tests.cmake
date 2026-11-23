@@ -1,5 +1,0 @@
-add_test([=[Property.MatchesReferenceOnRandomStreams]=]  /home/emili/orderbook-engine/build-san/test_property [==[--gtest_filter=Property.MatchesReferenceOnRandomStreams]==] --gtest_also_run_disabled_tests)
-set_tests_properties([=[Property.MatchesReferenceOnRandomStreams]=]  PROPERTIES WORKING_DIRECTORY /home/emili/orderbook-engine/build-san SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
-add_test([=[Property.MatchesReferenceOnDeepQueues]=]  /home/emili/orderbook-engine/build-san/test_property [==[--gtest_filter=Property.MatchesReferenceOnDeepQueues]==] --gtest_also_run_disabled_tests)
-set_tests_properties([=[Property.MatchesReferenceOnDeepQueues]=]  PROPERTIES WORKING_DIRECTORY /home/emili/orderbook-engine/build-san SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
-set(  test_property_TESTS Property.MatchesReferenceOnRandomStreams Property.MatchesReferenceOnDeepQueues)

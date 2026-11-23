@@ -26,7 +26,7 @@ if(NOT MSVC)
 endif()
 
 # Event schema (CSV) + synthetic generator
-add_library(obdata src/event.cpp src/generator.cpp)
+add_library(obdata src/event.cpp src/generator.cpp src/replayer.cpp)
 target_link_libraries(obdata PUBLIC orderbook)
 if(NOT MSVC)
   target_compile_options(obdata PRIVATE -Wall -Wextra -Wpedantic)
@@ -36,6 +36,12 @@ add_executable(ob_gen src/gen_main.cpp)
 target_link_libraries(ob_gen PRIVATE obdata)
 if(NOT MSVC)
   target_compile_options(ob_gen PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+add_executable(ob_replay src/replay_main.cpp)
+target_link_libraries(ob_replay PRIVATE obdata)
+if(NOT MSVC)
+  target_compile_options(ob_replay PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 # Tests (GoogleTest via FetchContent)
@@ -73,3 +79,11 @@ if(NOT MSVC)
   target_compile_options(test_generator PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 gtest_discover_tests(test_generator)
+
+# Replayer tests
+add_executable(test_replayer tests/test_replayer.cpp)
+target_link_libraries(test_replayer PRIVATE obdata GTest::gtest_main)
+if(NOT MSVC)
+  target_compile_options(test_replayer PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+gtest_discover_tests(test_replayer)
