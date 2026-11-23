@@ -25,6 +25,19 @@ if(NOT MSVC)
   target_compile_options(orderbook PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
+# Event schema (CSV) + synthetic generator
+add_library(obdata src/event.cpp src/generator.cpp)
+target_link_libraries(obdata PUBLIC orderbook)
+if(NOT MSVC)
+  target_compile_options(obdata PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+add_executable(ob_gen src/gen_main.cpp)
+target_link_libraries(ob_gen PRIVATE obdata)
+if(NOT MSVC)
+  target_compile_options(ob_gen PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
 # Tests (GoogleTest via FetchContent)
 include(FetchContent)
 FetchContent_Declare(
@@ -52,3 +65,11 @@ if(NOT MSVC)
   target_compile_options(test_property PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 gtest_discover_tests(test_property)
+
+# Generator + CSV schema tests
+add_executable(test_generator tests/test_generator.cpp)
+target_link_libraries(test_generator PRIVATE obdata GTest::gtest_main)
+if(NOT MSVC)
+  target_compile_options(test_generator PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+gtest_discover_tests(test_generator)

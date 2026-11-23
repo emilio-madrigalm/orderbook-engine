@@ -1,0 +1,1 @@
+/usr/bin/c++ -g -fsanitize=address,undefined CMakeFiles/test_property.dir/tests/test_property.cpp.o -o test_property  liborderbook.a lib/libgtest_main.a lib/libgtest.a 

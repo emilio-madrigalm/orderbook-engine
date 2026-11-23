@@ -1,0 +1,5 @@
+if(EXISTS "/home/emili/orderbook-engine/build-san/test_order_book[1]_tests.cmake")
+  include("/home/emili/orderbook-engine/build-san/test_order_book[1]_tests.cmake")
+else()
+  add_test(test_order_book_NOT_BUILT test_order_book_NOT_BUILT)
+endif()

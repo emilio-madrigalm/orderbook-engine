@@ -1,0 +1,759 @@
+Start testing: Nov 23 18:51 AEDT
+----------------------------------------------------------
+1/28 Testing: OrderTypes.OrderHoldsFields
+1/28 Test: OrderTypes.OrderHoldsFields
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderTypes.OrderHoldsFields" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderTypes.OrderHoldsFields" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderTypes.OrderHoldsFields
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderTypes
+[ RUN      ] OrderTypes.OrderHoldsFields
+[       OK ] OrderTypes.OrderHoldsFields (0 ms)
+[----------] 1 test from OrderTypes (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderTypes.OrderHoldsFields" end time: Nov 23 18:51 AEDT
+"OrderTypes.OrderHoldsFields" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/28 Testing: OrderTypes.TradeHoldsFields
+2/28 Test: OrderTypes.TradeHoldsFields
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderTypes.TradeHoldsFields" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderTypes.TradeHoldsFields" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderTypes.TradeHoldsFields
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderTypes
+[ RUN      ] OrderTypes.TradeHoldsFields
+[       OK ] OrderTypes.TradeHoldsFields (0 ms)
+[----------] 1 test from OrderTypes (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderTypes.TradeHoldsFields" end time: Nov 23 18:51 AEDT
+"OrderTypes.TradeHoldsFields" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/28 Testing: OrderBook.EmptyBookHasNoQuotes
+3/28 Test: OrderBook.EmptyBookHasNoQuotes
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.EmptyBookHasNoQuotes" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.EmptyBookHasNoQuotes" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.EmptyBookHasNoQuotes
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.EmptyBookHasNoQuotes
+[       OK ] OrderBook.EmptyBookHasNoQuotes (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.EmptyBookHasNoQuotes" end time: Nov 23 18:51 AEDT
+"OrderBook.EmptyBookHasNoQuotes" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/28 Testing: OrderBook.NonCrossingOrdersRest
+4/28 Test: OrderBook.NonCrossingOrdersRest
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.NonCrossingOrdersRest" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.NonCrossingOrdersRest" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.NonCrossingOrdersRest
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.NonCrossingOrdersRest
+[       OK ] OrderBook.NonCrossingOrdersRest (1 ms)
+[----------] 1 test from OrderBook (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (1 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.NonCrossingOrdersRest" end time: Nov 23 18:51 AEDT
+"OrderBook.NonCrossingOrdersRest" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/28 Testing: OrderBook.SimpleMatch
+5/28 Test: OrderBook.SimpleMatch
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.SimpleMatch" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.SimpleMatch" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.SimpleMatch
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.SimpleMatch
+[       OK ] OrderBook.SimpleMatch (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.SimpleMatch" end time: Nov 23 18:51 AEDT
+"OrderBook.SimpleMatch" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/28 Testing: OrderBook.TradeExecutesAtRestingPrice
+6/28 Test: OrderBook.TradeExecutesAtRestingPrice
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.TradeExecutesAtRestingPrice" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.TradeExecutesAtRestingPrice" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.TradeExecutesAtRestingPrice
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.TradeExecutesAtRestingPrice
+[       OK ] OrderBook.TradeExecutesAtRestingPrice (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.TradeExecutesAtRestingPrice" end time: Nov 23 18:51 AEDT
+"OrderBook.TradeExecutesAtRestingPrice" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/28 Testing: OrderBook.PartialFillOfIncomingRestsRemainder
+7/28 Test: OrderBook.PartialFillOfIncomingRestsRemainder
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.PartialFillOfIncomingRestsRemainder" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.PartialFillOfIncomingRestsRemainder" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.PartialFillOfIncomingRestsRemainder
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.PartialFillOfIncomingRestsRemainder
+[       OK ] OrderBook.PartialFillOfIncomingRestsRemainder (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.PartialFillOfIncomingRestsRemainder" end time: Nov 23 18:51 AEDT
+"OrderBook.PartialFillOfIncomingRestsRemainder" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/28 Testing: OrderBook.PartialFillOfRestingOrderLeavesRemainder
+8/28 Test: OrderBook.PartialFillOfRestingOrderLeavesRemainder
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.PartialFillOfRestingOrderLeavesRemainder" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.PartialFillOfRestingOrderLeavesRemainder" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.PartialFillOfRestingOrderLeavesRemainder
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.PartialFillOfRestingOrderLeavesRemainder
+[       OK ] OrderBook.PartialFillOfRestingOrderLeavesRemainder (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (2 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.PartialFillOfRestingOrderLeavesRemainder" end time: Nov 23 18:51 AEDT
+"OrderBook.PartialFillOfRestingOrderLeavesRemainder" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/28 Testing: OrderBook.MultiLevelSweepBuy
+9/28 Test: OrderBook.MultiLevelSweepBuy
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.MultiLevelSweepBuy" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.MultiLevelSweepBuy" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.MultiLevelSweepBuy
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.MultiLevelSweepBuy
+[       OK ] OrderBook.MultiLevelSweepBuy (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.MultiLevelSweepBuy" end time: Nov 23 18:51 AEDT
+"OrderBook.MultiLevelSweepBuy" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/28 Testing: OrderBook.MultiLevelSweepSell
+10/28 Test: OrderBook.MultiLevelSweepSell
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.MultiLevelSweepSell" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.MultiLevelSweepSell" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.MultiLevelSweepSell
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.MultiLevelSweepSell
+[       OK ] OrderBook.MultiLevelSweepSell (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.MultiLevelSweepSell" end time: Nov 23 18:51 AEDT
+"OrderBook.MultiLevelSweepSell" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/28 Testing: OrderBook.FifoWithinLevel
+11/28 Test: OrderBook.FifoWithinLevel
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.FifoWithinLevel" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.FifoWithinLevel" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.FifoWithinLevel
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.FifoWithinLevel
+[       OK ] OrderBook.FifoWithinLevel (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.FifoWithinLevel" end time: Nov 23 18:51 AEDT
+"OrderBook.FifoWithinLevel" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/28 Testing: OrderBook.MarketOrderOnEmptyBook
+12/28 Test: OrderBook.MarketOrderOnEmptyBook
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.MarketOrderOnEmptyBook" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.MarketOrderOnEmptyBook" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.MarketOrderOnEmptyBook
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.MarketOrderOnEmptyBook
+[       OK ] OrderBook.MarketOrderOnEmptyBook (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.MarketOrderOnEmptyBook" end time: Nov 23 18:51 AEDT
+"OrderBook.MarketOrderOnEmptyBook" time elapsed: 00:00:00
+----------------------------------------------------------
+
+13/28 Testing: OrderBook.MarketOrderSweepsLevelsAndDropsRemainder
+13/28 Test: OrderBook.MarketOrderSweepsLevelsAndDropsRemainder
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.MarketOrderSweepsLevelsAndDropsRemainder" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.MarketOrderSweepsLevelsAndDropsRemainder" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.MarketOrderSweepsLevelsAndDropsRemainder
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.MarketOrderSweepsLevelsAndDropsRemainder
+[       OK ] OrderBook.MarketOrderSweepsLevelsAndDropsRemainder (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.MarketOrderSweepsLevelsAndDropsRemainder" end time: Nov 23 18:51 AEDT
+"OrderBook.MarketOrderSweepsLevelsAndDropsRemainder" time elapsed: 00:00:00
+----------------------------------------------------------
+
+14/28 Testing: OrderBook.MarketSellHitsBids
+14/28 Test: OrderBook.MarketSellHitsBids
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.MarketSellHitsBids" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.MarketSellHitsBids" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.MarketSellHitsBids
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.MarketSellHitsBids
+[       OK ] OrderBook.MarketSellHitsBids (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.MarketSellHitsBids" end time: Nov 23 18:51 AEDT
+"OrderBook.MarketSellHitsBids" time elapsed: 00:00:00
+----------------------------------------------------------
+
+15/28 Testing: OrderBook.CancelRemovesOrderAndUpdatesBest
+15/28 Test: OrderBook.CancelRemovesOrderAndUpdatesBest
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.CancelRemovesOrderAndUpdatesBest" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.CancelRemovesOrderAndUpdatesBest" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.CancelRemovesOrderAndUpdatesBest
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.CancelRemovesOrderAndUpdatesBest
+[       OK ] OrderBook.CancelRemovesOrderAndUpdatesBest (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.CancelRemovesOrderAndUpdatesBest" end time: Nov 23 18:51 AEDT
+"OrderBook.CancelRemovesOrderAndUpdatesBest" time elapsed: 00:00:00
+----------------------------------------------------------
+
+16/28 Testing: OrderBook.CancelUnknownId
+16/28 Test: OrderBook.CancelUnknownId
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.CancelUnknownId" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.CancelUnknownId" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.CancelUnknownId
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.CancelUnknownId
+[       OK ] OrderBook.CancelUnknownId (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.CancelUnknownId" end time: Nov 23 18:51 AEDT
+"OrderBook.CancelUnknownId" time elapsed: 00:00:00
+----------------------------------------------------------
+
+17/28 Testing: OrderBook.CancelTwiceFailsSecondTime
+17/28 Test: OrderBook.CancelTwiceFailsSecondTime
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.CancelTwiceFailsSecondTime" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.CancelTwiceFailsSecondTime" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.CancelTwiceFailsSecondTime
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.CancelTwiceFailsSecondTime
+[       OK ] OrderBook.CancelTwiceFailsSecondTime (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.CancelTwiceFailsSecondTime" end time: Nov 23 18:51 AEDT
+"OrderBook.CancelTwiceFailsSecondTime" time elapsed: 00:00:00
+----------------------------------------------------------
+
+18/28 Testing: OrderBook.CancelFullyFilledOrderFails
+18/28 Test: OrderBook.CancelFullyFilledOrderFails
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.CancelFullyFilledOrderFails" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.CancelFullyFilledOrderFails" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.CancelFullyFilledOrderFails
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.CancelFullyFilledOrderFails
+[       OK ] OrderBook.CancelFullyFilledOrderFails (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.CancelFullyFilledOrderFails" end time: Nov 23 18:51 AEDT
+"OrderBook.CancelFullyFilledOrderFails" time elapsed: 00:00:00
+----------------------------------------------------------
+
+19/28 Testing: OrderBook.RejectsNonPositiveQuantity
+19/28 Test: OrderBook.RejectsNonPositiveQuantity
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.RejectsNonPositiveQuantity" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.RejectsNonPositiveQuantity" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.RejectsNonPositiveQuantity
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.RejectsNonPositiveQuantity
+[       OK ] OrderBook.RejectsNonPositiveQuantity (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.RejectsNonPositiveQuantity" end time: Nov 23 18:51 AEDT
+"OrderBook.RejectsNonPositiveQuantity" time elapsed: 00:00:00
+----------------------------------------------------------
+
+20/28 Testing: OrderBook.RejectsNonPositiveLimitPrice
+20/28 Test: OrderBook.RejectsNonPositiveLimitPrice
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.RejectsNonPositiveLimitPrice" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.RejectsNonPositiveLimitPrice" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.RejectsNonPositiveLimitPrice
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.RejectsNonPositiveLimitPrice
+[       OK ] OrderBook.RejectsNonPositiveLimitPrice (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.RejectsNonPositiveLimitPrice" end time: Nov 23 18:51 AEDT
+"OrderBook.RejectsNonPositiveLimitPrice" time elapsed: 00:00:00
+----------------------------------------------------------
+
+21/28 Testing: OrderBook.DuplicateIdRejectedAndBookUnchanged
+21/28 Test: OrderBook.DuplicateIdRejectedAndBookUnchanged
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.DuplicateIdRejectedAndBookUnchanged" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.DuplicateIdRejectedAndBookUnchanged" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.DuplicateIdRejectedAndBookUnchanged
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.DuplicateIdRejectedAndBookUnchanged
+[       OK ] OrderBook.DuplicateIdRejectedAndBookUnchanged (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.DuplicateIdRejectedAndBookUnchanged" end time: Nov 23 18:51 AEDT
+"OrderBook.DuplicateIdRejectedAndBookUnchanged" time elapsed: 00:00:00
+----------------------------------------------------------
+
+22/28 Testing: OrderBook.IdCanBeReusedAfterFullFill
+22/28 Test: OrderBook.IdCanBeReusedAfterFullFill
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.IdCanBeReusedAfterFullFill" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.IdCanBeReusedAfterFullFill" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.IdCanBeReusedAfterFullFill
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.IdCanBeReusedAfterFullFill
+[       OK ] OrderBook.IdCanBeReusedAfterFullFill (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.IdCanBeReusedAfterFullFill" end time: Nov 23 18:51 AEDT
+"OrderBook.IdCanBeReusedAfterFullFill" time elapsed: 00:00:00
+----------------------------------------------------------
+
+23/28 Testing: OrderBook.ModifyDownKeepsPriority
+23/28 Test: OrderBook.ModifyDownKeepsPriority
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.ModifyDownKeepsPriority" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.ModifyDownKeepsPriority" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.ModifyDownKeepsPriority
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.ModifyDownKeepsPriority
+[       OK ] OrderBook.ModifyDownKeepsPriority (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.ModifyDownKeepsPriority" end time: Nov 23 18:51 AEDT
+"OrderBook.ModifyDownKeepsPriority" time elapsed: 00:00:00
+----------------------------------------------------------
+
+24/28 Testing: OrderBook.ModifyUpLosesPriority
+24/28 Test: OrderBook.ModifyUpLosesPriority
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.ModifyUpLosesPriority" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.ModifyUpLosesPriority" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.ModifyUpLosesPriority
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.ModifyUpLosesPriority
+[       OK ] OrderBook.ModifyUpLosesPriority (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.ModifyUpLosesPriority" end time: Nov 23 18:51 AEDT
+"OrderBook.ModifyUpLosesPriority" time elapsed: 00:00:00
+----------------------------------------------------------
+
+25/28 Testing: OrderBook.ModifyInvalidArguments
+25/28 Test: OrderBook.ModifyInvalidArguments
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.ModifyInvalidArguments" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.ModifyInvalidArguments" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.ModifyInvalidArguments
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.ModifyInvalidArguments
+[       OK ] OrderBook.ModifyInvalidArguments (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.ModifyInvalidArguments" end time: Nov 23 18:51 AEDT
+"OrderBook.ModifyInvalidArguments" time elapsed: 00:00:00
+----------------------------------------------------------
+
+26/28 Testing: OrderBook.DepthAggregatesLevelsBestFirst
+26/28 Test: OrderBook.DepthAggregatesLevelsBestFirst
+Command: "/home/emili/orderbook-engine/build-san/test_order_book" "--gtest_filter=OrderBook.DepthAggregatesLevelsBestFirst" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"OrderBook.DepthAggregatesLevelsBestFirst" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OrderBook.DepthAggregatesLevelsBestFirst
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OrderBook
+[ RUN      ] OrderBook.DepthAggregatesLevelsBestFirst
+[       OK ] OrderBook.DepthAggregatesLevelsBestFirst (0 ms)
+[----------] 1 test from OrderBook (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"OrderBook.DepthAggregatesLevelsBestFirst" end time: Nov 23 18:51 AEDT
+"OrderBook.DepthAggregatesLevelsBestFirst" time elapsed: 00:00:00
+----------------------------------------------------------
+
+27/28 Testing: Property.MatchesReferenceOnRandomStreams
+27/28 Test: Property.MatchesReferenceOnRandomStreams
+Command: "/home/emili/orderbook-engine/build-san/test_property" "--gtest_filter=Property.MatchesReferenceOnRandomStreams" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"Property.MatchesReferenceOnRandomStreams" start time: Nov 23 18:51 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = Property.MatchesReferenceOnRandomStreams
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Property
+[ RUN      ] Property.MatchesReferenceOnRandomStreams
+[       OK ] Property.MatchesReferenceOnRandomStreams (17728 ms)
+[----------] 1 test from Property (17728 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (17728 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =  17.95 sec
+----------------------------------------------------------
+Test Passed.
+"Property.MatchesReferenceOnRandomStreams" end time: Nov 23 18:52 AEDT
+"Property.MatchesReferenceOnRandomStreams" time elapsed: 00:00:17
+----------------------------------------------------------
+
+28/28 Testing: Property.MatchesReferenceOnDeepQueues
+28/28 Test: Property.MatchesReferenceOnDeepQueues
+Command: "/home/emili/orderbook-engine/build-san/test_property" "--gtest_filter=Property.MatchesReferenceOnDeepQueues" "--gtest_also_run_disabled_tests"
+Directory: /home/emili/orderbook-engine/build-san
+"Property.MatchesReferenceOnDeepQueues" start time: Nov 23 18:52 AEDT
+Output:
+----------------------------------------------------------
+Running main() from /home/emili/orderbook-engine/build-san/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = Property.MatchesReferenceOnDeepQueues
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Property
+[ RUN      ] Property.MatchesReferenceOnDeepQueues
+[       OK ] Property.MatchesReferenceOnDeepQueues (4384 ms)
+[----------] 1 test from Property (4384 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (4384 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   4.52 sec
+----------------------------------------------------------
+Test Passed.
+"Property.MatchesReferenceOnDeepQueues" end time: Nov 23 18:52 AEDT
+"Property.MatchesReferenceOnDeepQueues" time elapsed: 00:00:04
+----------------------------------------------------------
+
+End testing: Nov 23 18:52 AEDT
