@@ -39,7 +39,9 @@ void OrderBook::match(Book& opposite, Order& incoming, bool is_limit, std::vecto
 }
 
 void OrderBook::rest(const Order& order) {
-    Level& queue = order.side == Side::Buy ? bids_[order.price] : asks_[order.price];
+    const PoolAllocator<Order> alloc(&arena_);
+    Level& queue = order.side == Side::Buy ? bids_.try_emplace(order.price, alloc).first->second
+                                           : asks_.try_emplace(order.price, alloc).first->second;
     queue.push_back(order);
     index_[order.id] = Locator{order.side, order.price, std::prev(queue.end())};
 }

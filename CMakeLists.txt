@@ -94,3 +94,11 @@ if(NOT MSVC)
   target_compile_options(test_replayer PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 gtest_discover_tests(test_replayer)
+
+# Node pool allocator tests
+add_executable(test_pool_allocator tests/test_pool_allocator.cpp)
+target_link_libraries(test_pool_allocator PRIVATE orderbook GTest::gtest_main)
+if(NOT MSVC)
+  target_compile_options(test_pool_allocator PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+gtest_discover_tests(test_pool_allocator)
