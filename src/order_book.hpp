@@ -2,7 +2,6 @@
 
 #include <cstddef>
 #include <functional>
-#include <list>
 #include <map>
 #include <optional>
 #include <unordered_map>
@@ -34,10 +33,10 @@ struct LevelInfo {
     bool operator==(const LevelInfo&) const = default;
 };
 
-// Order book: std::map of price levels, each a FIFO std::list, plus an id ->
-// iterator index for O(1) lookup on cancel/modify. Every node is allocated from
-// the book's own NodeArena (see pool_allocator.hpp), so steady-state add/cancel
-// does not call the global heap for container nodes.
+// Order book: std::map of price levels, each an intrusive doubly linked FIFO of
+// resting orders, plus an id -> node index for O(1) cancel/modify. Nodes and
+// index entries come from the book's own NodeArena (see pool_allocator.hpp), so
+// steady-state add/cancel does not call the global heap.
 //
 // Matching is price-time priority: best price first, then arrival order within
 // a price. Trades execute at the RESTING order's price.
@@ -47,7 +46,7 @@ public:
         : bids_(std::greater<>{}, PoolAllocator<LevelNode>(&arena_)),
           asks_(std::less<>{}, PoolAllocator<LevelNode>(&arena_)),
           index_(0, std::hash<OrderId>{}, std::equal_to<OrderId>{},
-                 PoolAllocator<std::pair<const OrderId, Locator>>(&arena_)) {}
+                 PoolAllocator<IndexNode>(&arena_)) {}
     OrderBook(const OrderBook&)            = delete;
     OrderBook& operator=(const OrderBook&) = delete;
 
@@ -74,25 +73,41 @@ public:
     std::size_t order_count() const { return index_.size(); }
 
 private:
-    using Level = std::list<Order, PoolAllocator<Order>>;
+    struct OrderNode {
+        Order      order;
+        OrderNode* prev{};
+        OrderNode* next{};
+    };
+
+    struct Level {
+        OrderNode* head{};
+        OrderNode* tail{};
+        bool       empty() const { return head == nullptr; }
+    };
 
     struct Locator {
-        Side            side;
-        Price           price;
-        Level::iterator it;
+        Side       side;
+        Price      price;
+        Level*     level;  // stable: std::map nodes do not move
+        OrderNode* node;
     };
 
     using LevelNode = std::pair<const Price, Level>;
+    using IndexNode = std::pair<const OrderId, Locator>;
     using BidMap    = std::map<Price, Level, std::greater<>, PoolAllocator<LevelNode>>;
     using AskMap    = std::map<Price, Level, std::less<>, PoolAllocator<LevelNode>>;
     using IndexMap  = std::unordered_map<OrderId, Locator, std::hash<OrderId>,
-                                        std::equal_to<OrderId>,
-                                        PoolAllocator<std::pair<const OrderId, Locator>>>;
+                                        std::equal_to<OrderId>, PoolAllocator<IndexNode>>;
 
     template <class Book>
     void match(Book& opposite, Order& incoming, bool is_limit, std::vector<Trade>& trades);
 
     void rest(const Order& order);
+
+    OrderNode* new_node(const Order& order);
+    void       free_node(OrderNode* node) noexcept;
+    static void link_back(Level& level, OrderNode* node) noexcept;
+    static void unlink(Level& level, OrderNode* node) noexcept;
 
     // Declared first: the containers below allocate from it and must not outlive it.
     NodeArena arena_;
