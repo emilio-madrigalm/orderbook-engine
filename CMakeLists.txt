@@ -44,6 +44,13 @@ if(NOT MSVC)
   target_compile_options(ob_replay PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
+# Benchmark (Release only; the binary refuses to run otherwise)
+add_executable(ob_bench bench/bench.cpp)
+target_link_libraries(ob_bench PRIVATE obdata)
+if(NOT MSVC)
+  target_compile_options(ob_bench PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
 # Tests (GoogleTest via FetchContent)
 include(FetchContent)
 FetchContent_Declare(
