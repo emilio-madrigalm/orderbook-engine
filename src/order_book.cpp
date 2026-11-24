@@ -49,10 +49,65 @@ std::size_t lowest_set(const std::vector<std::uint64_t>& bits, std::size_t from)
 
 }  // namespace
 
+// ---- IdIndex -------------------------------------------------------------
+
+const OrderBook::IdIndex::Entry* OrderBook::IdIndex::find(OrderId id) const noexcept {
+    if (slots_.empty()) return nullptr;
+    for (std::size_t i = hash(id) & mask_;; i = (i + 1) & mask_) {
+        const Entry& e = slots_[i];
+        if (e.node == nullptr) return nullptr;
+        if (e.id == id) return &e;
+    }
+}
+
+OrderBook::IdIndex::Entry* OrderBook::IdIndex::find(OrderId id) noexcept {
+    return const_cast<Entry*>(static_cast<const IdIndex&>(*this).find(id));
+}
+
+void OrderBook::IdIndex::grow() {
+    std::vector<Entry> old = std::move(slots_);
+    const std::size_t cap  = old.empty() ? 1024 : old.size() * 2;
+    slots_.assign(cap, Entry{});
+    mask_ = cap - 1;
+    for (const Entry& e : old) {
+        if (e.node == nullptr) continue;
+        std::size_t i = hash(e.id) & mask_;
+        while (slots_[i].node != nullptr) i = (i + 1) & mask_;
+        slots_[i] = e;
+    }
+}
+
+void OrderBook::IdIndex::insert(OrderId id, Side side, std::size_t tick, OrderNode* node) {
+    if ((size_ + 1) * 2 > slots_.size()) grow();
+    std::size_t i = hash(id) & mask_;
+    while (slots_[i].node != nullptr) i = (i + 1) & mask_;
+    slots_[i] = Entry{id, node, static_cast<std::uint32_t>(tick), side};
+    ++size_;
+}
+
+void OrderBook::IdIndex::erase(OrderId id) noexcept {
+    if (slots_.empty()) return;
+    std::size_t i = hash(id) & mask_;
+    while (slots_[i].node != nullptr && slots_[i].id != id) i = (i + 1) & mask_;
+    if (slots_[i].node == nullptr) return;
+
+    // Backward-shift deletion: pull later entries of the same probe run into the hole.
+    std::size_t hole = i;
+    for (std::size_t j = (i + 1) & mask_; slots_[j].node != nullptr; j = (j + 1) & mask_) {
+        const std::size_t home = hash(slots_[j].id) & mask_;
+        // Move j into the hole only if its home is not cyclically inside (hole, j].
+        const bool stays = hole <= j ? (home > hole && home <= j) : (home > hole || home <= j);
+        if (!stays) {
+            slots_[hole] = slots_[j];
+            hole         = j;
+        }
+    }
+    slots_[hole] = Entry{};
+    --size_;
+}
+
 OrderBook::OrderBook(Price min_price, Price max_price)
-    : index_(0, std::hash<OrderId>{}, std::equal_to<OrderId>{},
-             PoolAllocator<IndexNode>(&arena_)),
-      min_price_(min_price),
+    : min_price_(min_price),
       max_price_(max_price),
       bid_levels_(band_size(min_price, max_price)),
       ask_levels_(band_size(min_price, max_price)),
@@ -155,7 +210,7 @@ void OrderBook::rest(const Order& order) {
 
     OrderNode* node = new_node(order);
     link_back(level, node);
-    index_[order.id] = Locator{order.side, tick, &level, node};
+    index_.insert(order.id, order.side, tick, node);
 }
 
 AddResult OrderBook::add_limit(const Order& order) {
@@ -197,25 +252,28 @@ AddResult OrderBook::add_market(const Order& order) {
 }
 
 Status OrderBook::cancel(OrderId id) {
-    const auto found = index_.find(id);
-    if (found == index_.end()) return Status::UnknownId;
+    const IdIndex::Entry* found = index_.find(id);
+    if (found == nullptr) return Status::UnknownId;
 
-    const Locator loc = found->second;
-    index_.erase(found);
+    const Side        side = found->side;
+    const std::size_t tick = found->tick;
+    OrderNode*        node = found->node;
+    index_.erase(id);
 
-    unlink(*loc.level, loc.node);
-    if (loc.level->empty()) drop_level(loc.side, loc.tick);
-    free_node(loc.node);
+    Level& level = side == Side::Buy ? bid_levels_[tick] : ask_levels_[tick];
+    unlink(level, node);
+    if (level.empty()) drop_level(side, tick);
+    free_node(node);
     return Status::Ok;
 }
 
 Status OrderBook::modify(OrderId id, Quantity new_qty) {
     if (new_qty <= 0) return Status::InvalidQuantity;
 
-    const auto found = index_.find(id);
-    if (found == index_.end()) return Status::UnknownId;
+    const IdIndex::Entry* found = index_.find(id);
+    if (found == nullptr) return Status::UnknownId;
 
-    OrderNode* existing = found->second.node;
+    OrderNode* existing = found->node;
     if (new_qty <= existing->order.qty) {
         existing->order.qty = new_qty;  // reducing keeps queue position
         return Status::Ok;

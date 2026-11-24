@@ -5,7 +5,6 @@
 #include <functional>
 #include <limits>
 #include <optional>
-#include <unordered_map>
 #include <vector>
 
 #include "order.hpp"
@@ -98,16 +97,40 @@ private:
         bool       empty() const { return head == nullptr; }
     };
 
-    struct Locator {
-        Side        side;
-        std::size_t tick;   // index into the side's level array
-        Level*      level;  // stable: the level arrays are never resized
-        OrderNode*  node;
-    };
+    // Open-addressing (linear probing, backward-shift deletion) id -> locator table.
+    // Power-of-two capacity, grows at 1/2 load. Entries are compact and contiguous,
+    // so a lookup is usually one cache line instead of a bucket-list pointer chase.
+    class IdIndex {
+    public:
+        struct Entry {
+            OrderId  id{};
+            OrderNode* node{};   // nullptr marks an empty slot
+            std::uint32_t tick{};
+            Side     side{};
+        };
 
-    using IndexNode = std::pair<const OrderId, Locator>;
-    using IndexMap  = std::unordered_map<OrderId, Locator, std::hash<OrderId>,
-                                        std::equal_to<OrderId>, PoolAllocator<IndexNode>>;
+        IdIndex() = default;
+        IdIndex(const IdIndex&)            = delete;
+        IdIndex& operator=(const IdIndex&) = delete;
+
+        std::size_t size() const noexcept { return size_; }
+        bool        contains(OrderId id) const noexcept { return find(id) != nullptr; }
+
+        const Entry* find(OrderId id) const noexcept;
+        Entry*       find(OrderId id) noexcept;
+        void         insert(OrderId id, Side side, std::size_t tick, OrderNode* node);
+        void         erase(OrderId id) noexcept;
+
+    private:
+        static std::size_t hash(OrderId id) noexcept {
+            return static_cast<std::size_t>((id * 0x9E3779B97F4A7C15ull) >> 16);
+        }
+        void grow();
+
+        std::vector<Entry> slots_;
+        std::size_t        mask_{0};
+        std::size_t        size_{0};
+    };
 
     std::size_t tick_of(Price price) const {
         return static_cast<std::size_t>(price - min_price_);
@@ -128,7 +151,7 @@ private:
 
     // Declared first: the containers below allocate from it and must not outlive it.
     NodeArena arena_;
-    IndexMap  index_;
+    IdIndex   index_;
 
     Price min_price_;
     Price max_price_;

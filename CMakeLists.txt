@@ -110,3 +110,11 @@ if(NOT MSVC)
   target_compile_options(test_price_band PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 gtest_discover_tests(test_price_band)
+
+# Id index (flat open-addressing table) stress tests
+add_executable(test_id_index tests/test_id_index.cpp)
+target_link_libraries(test_id_index PRIVATE orderbook GTest::gtest_main)
+if(NOT MSVC)
+  target_compile_options(test_id_index PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+gtest_discover_tests(test_id_index)
