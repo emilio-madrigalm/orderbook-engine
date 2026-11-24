@@ -19,3 +19,8 @@ jobs:
 
       - name: Test
         run: ctest --test-dir build --output-on-failure
+
+      - name: Python tests
+        env:
+          OB_BUILD_DIR: build
+        run: python3 -m unittest discover -s python/tests -v
