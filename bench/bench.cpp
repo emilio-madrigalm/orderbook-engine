@@ -41,6 +41,7 @@ struct Options {
     std::size_t   warmup{100'000};
     std::size_t   repeat{3};
     int           pin_core{-1};  // -1: not pinned
+    bool          deep{false};   // --profile deep: deeper-book stream
 };
 
 // Running totals. Also acts as the sink that stops the optimizer removing work.
@@ -139,7 +140,8 @@ bool pin_to_core(int core) {
 
 void usage() {
     std::fprintf(stderr,
-                 "usage: ob_bench [--events N] [--seed S] [--warmup N] [--repeat R] [--pin CORE]\n");
+                 "usage: ob_bench [--events N] [--seed S] [--warmup N] [--repeat R] [--pin CORE]\n"
+                 "                [--profile default|deep]\n");
 }
 
 bool parse_args(int argc, char** argv, Options& opt) {
@@ -155,6 +157,15 @@ bool parse_args(int argc, char** argv, Options& opt) {
             opt.repeat = std::strtoull(argv[++i], nullptr, 10);
         } else if (!std::strcmp(argv[i], "--pin") && has_value) {
             opt.pin_core = std::atoi(argv[++i]);
+        } else if (!std::strcmp(argv[i], "--profile") && has_value) {
+            const char* name = argv[++i];
+            if (!std::strcmp(name, "deep")) {
+                opt.deep = true;
+            } else if (!std::strcmp(name, "default")) {
+                opt.deep = false;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -184,9 +195,13 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    ob::GenConfig cfg;
-    cfg.seed       = opt.seed;
-    cfg.num_events = opt.num_events;
+    const ob::GenConfig cfg = opt.deep ? ob::deep_book_config(opt.seed, opt.num_events)
+                                       : [&] {
+                                             ob::GenConfig c;
+                                             c.seed       = opt.seed;
+                                             c.num_events = opt.num_events;
+                                             return c;
+                                         }();
     const std::vector<ob::Event> events = ob::generate(cfg);
 
     Totals sink;  // accumulates from warmup too, printed at the end
@@ -222,8 +237,9 @@ int main(int argc, char** argv) {
     for (std::uint64_t s : samples) sum += s;
 
     std::printf("build:      %s, %s\n", "Release", __VERSION__);
-    std::printf("stream:     %zu events, seed %llu, warmup %zu, pinned core: %s\n",
-                events.size(), static_cast<unsigned long long>(opt.seed), opt.warmup,
+    std::printf("stream:     %zu events, profile %s, seed %llu, warmup %zu, pinned core: %s\n",
+                events.size(), opt.deep ? "deep" : "default",
+                static_cast<unsigned long long>(opt.seed), opt.warmup,
                 opt.pin_core >= 0 ? std::to_string(opt.pin_core).c_str() : "none");
     std::printf("clock:      %llu ns per clock read (median back-to-back gap, subtracted)\n",
                 static_cast<unsigned long long>(overhead));

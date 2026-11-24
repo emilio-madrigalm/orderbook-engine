@@ -14,7 +14,8 @@ namespace {
 
 void usage() {
     std::fprintf(stderr,
-                 "usage: ob_gen [--events N] [--seed S] [--rate EVENTS_PER_SEC] [--out FILE]\n");
+                 "usage: ob_gen [--events N] [--seed S] [--rate EVENTS_PER_SEC]\n"
+                 "              [--profile default|deep] [--out FILE]\n");
 }
 
 }  // namespace
@@ -22,6 +23,7 @@ void usage() {
 int main(int argc, char** argv) {
     ob::GenConfig cfg;
     const char*   out_path = nullptr;
+    bool          deep     = false;
 
     for (int i = 1; i < argc; ++i) {
         const bool has_value = i + 1 < argc;
@@ -35,12 +37,28 @@ int main(int argc, char** argv) {
                 std::fprintf(stderr, "ob_gen: --rate must be > 0\n");
                 return 2;
             }
+        } else if (!std::strcmp(argv[i], "--profile") && has_value) {
+            const char* name = argv[++i];
+            if (!std::strcmp(name, "deep")) {
+                deep = true;
+            } else if (!std::strcmp(name, "default")) {
+                deep = false;
+            } else {
+                usage();
+                return 2;
+            }
         } else if (!std::strcmp(argv[i], "--out") && has_value) {
             out_path = argv[++i];
         } else {
             usage();
             return 2;
         }
+    }
+
+    if (deep) {
+        const double rate = cfg.rate_per_sec;
+        cfg               = ob::deep_book_config(cfg.seed, cfg.num_events);
+        cfg.rate_per_sec  = rate;  // --rate still applies to either profile
     }
 
     std::FILE* out = out_path ? std::fopen(out_path, "w") : stdout;

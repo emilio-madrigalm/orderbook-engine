@@ -37,6 +37,20 @@ struct GenConfig {
     Quantity max_qty{100};      // quantities are uniform in [1, max_qty]
 };
 
+// Deeper-book profile: mostly new orders, many cancels, few markets, and prices
+// spread far from the mid. Resting orders build up into the hundreds of
+// thousands, so the book no longer fits in L1 and layout effects can show up.
+inline GenConfig deep_book_config(std::uint64_t seed = 1, std::size_t num_events = 1'000'000) {
+    GenConfig cfg;
+    cfg.seed         = seed;
+    cfg.num_events   = num_events;
+    cfg.p_limit      = 0.70;
+    cfg.p_cancel     = 0.25;   // markets are the remaining 5%
+    cfg.p_aggressive = 0.02;
+    cfg.offset_p     = 0.02;   // mean distance ~50 ticks from mid
+    return cfg;
+}
+
 class Generator {
 public:
     explicit Generator(const GenConfig& config);
