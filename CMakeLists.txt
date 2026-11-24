@@ -102,3 +102,11 @@ if(NOT MSVC)
   target_compile_options(test_pool_allocator PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 gtest_discover_tests(test_pool_allocator)
+
+# Tick-band and flat-array tests
+add_executable(test_price_band tests/test_price_band.cpp)
+target_link_libraries(test_price_band PRIVATE orderbook GTest::gtest_main)
+if(NOT MSVC)
+  target_compile_options(test_price_band PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+gtest_discover_tests(test_price_band)

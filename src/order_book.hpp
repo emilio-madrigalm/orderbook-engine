@@ -1,8 +1,9 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <functional>
-#include <map>
+#include <limits>
 #include <optional>
 #include <unordered_map>
 #include <vector>
@@ -16,6 +17,7 @@ enum class Status {
     Ok,
     InvalidQuantity,  // qty <= 0
     InvalidPrice,     // limit price <= 0
+    PriceOutOfBand,   // limit price outside the book's tick band
     DuplicateId,      // a resting order already uses this id
     UnknownId,        // cancel/modify of an id that is not resting
 };
@@ -33,20 +35,29 @@ struct LevelInfo {
     bool operator==(const LevelInfo&) const = default;
 };
 
-// Order book: std::map of price levels, each an intrusive doubly linked FIFO of
-// resting orders, plus an id -> node index for O(1) cancel/modify. Nodes and
-// index entries come from the book's own NodeArena (see pool_allocator.hpp), so
+// Sentinel tick index meaning "no level".
+inline constexpr std::size_t kNoTick = std::numeric_limits<std::size_t>::max();
+
+// Order book: one flat array of price levels per side, indexed by price tick
+// (price - min_price), plus a bitmap per side marking non-empty levels and a
+// cached best level per side. Each level is an intrusive doubly linked FIFO of
+// resting orders, and an id -> locator index gives O(1) cancel/modify. Nodes and
+// index entries come from the book's NodeArena (see pool_allocator.hpp), so
 // steady-state add/cancel does not call the global heap.
+//
+// The tick band [min_price, max_price] is fixed at construction: the level arrays
+// cannot grow without moving levels. Limit orders priced outside it are rejected
+// with Status::PriceOutOfBand. Market orders carry no price and are unaffected.
 //
 // Matching is price-time priority: best price first, then arrival order within
 // a price. Trades execute at the RESTING order's price.
 class OrderBook {
 public:
-    OrderBook()
-        : bids_(std::greater<>{}, PoolAllocator<LevelNode>(&arena_)),
-          asks_(std::less<>{}, PoolAllocator<LevelNode>(&arena_)),
-          index_(0, std::hash<OrderId>{}, std::equal_to<OrderId>{},
-                 PoolAllocator<IndexNode>(&arena_)) {}
+    static constexpr Price kDefaultMinPrice = 1;
+    static constexpr Price kDefaultMaxPrice = 131071;  // 2^17 - 1 ticks
+
+    // Throws std::invalid_argument unless 1 <= min_price <= max_price.
+    explicit OrderBook(Price min_price = kDefaultMinPrice, Price max_price = kDefaultMaxPrice);
     OrderBook(const OrderBook&)            = delete;
     OrderBook& operator=(const OrderBook&) = delete;
 
@@ -71,6 +82,8 @@ public:
     std::vector<LevelInfo> depth(Side side, std::size_t n) const;
 
     std::size_t order_count() const { return index_.size(); }
+    Price       min_price() const { return min_price_; }
+    Price       max_price() const { return max_price_; }
 
 private:
     struct OrderNode {
@@ -86,23 +99,27 @@ private:
     };
 
     struct Locator {
-        Side       side;
-        Price      price;
-        Level*     level;  // stable: std::map nodes do not move
-        OrderNode* node;
+        Side        side;
+        std::size_t tick;   // index into the side's level array
+        Level*      level;  // stable: the level arrays are never resized
+        OrderNode*  node;
     };
 
-    using LevelNode = std::pair<const Price, Level>;
     using IndexNode = std::pair<const OrderId, Locator>;
-    using BidMap    = std::map<Price, Level, std::greater<>, PoolAllocator<LevelNode>>;
-    using AskMap    = std::map<Price, Level, std::less<>, PoolAllocator<LevelNode>>;
     using IndexMap  = std::unordered_map<OrderId, Locator, std::hash<OrderId>,
                                         std::equal_to<OrderId>, PoolAllocator<IndexNode>>;
 
-    template <class Book>
-    void match(Book& opposite, Order& incoming, bool is_limit, std::vector<Trade>& trades);
+    std::size_t tick_of(Price price) const {
+        return static_cast<std::size_t>(price - min_price_);
+    }
+    Price price_of(std::size_t tick) const { return min_price_ + static_cast<Price>(tick); }
+    bool  in_band(Price price) const { return price >= min_price_ && price <= max_price_; }
 
+    void match(Side incoming_side, Order& incoming, bool is_limit, std::vector<Trade>& trades);
     void rest(const Order& order);
+
+    // Called when a level becomes empty: clears its bit and fixes the cached best.
+    void drop_level(Side side, std::size_t tick) noexcept;
 
     OrderNode* new_node(const Order& order);
     void       free_node(OrderNode* node) noexcept;
@@ -111,9 +128,17 @@ private:
 
     // Declared first: the containers below allocate from it and must not outlive it.
     NodeArena arena_;
-    BidMap    bids_;
-    AskMap    asks_;
     IndexMap  index_;
+
+    Price min_price_;
+    Price max_price_;
+
+    std::vector<Level>         bid_levels_;
+    std::vector<Level>         ask_levels_;
+    std::vector<std::uint64_t> bid_bits_;  // bit t set <=> bid level at tick t is non-empty
+    std::vector<std::uint64_t> ask_bits_;
+    std::size_t                best_bid_{kNoTick};  // highest non-empty bid tick
+    std::size_t                best_ask_{kNoTick};  // lowest non-empty ask tick
 };
 
 }  // namespace ob
