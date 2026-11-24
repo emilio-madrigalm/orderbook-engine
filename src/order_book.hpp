@@ -50,6 +50,10 @@ inline constexpr std::size_t kNoTick = std::numeric_limits<std::size_t>::max();
 //
 // Matching is price-time priority: best price first, then arrival order within
 // a price. Trades execute at the RESTING order's price.
+//
+// The book keeps only what matching needs per resting order (id and quantity).
+// Price and side are implied by the level and index entry that hold the node, and
+// Order::timestamp is not stored: the book never reads it.
 class OrderBook {
 public:
     static constexpr Price kDefaultMinPrice = 1;
@@ -85,11 +89,14 @@ public:
     Price       max_price() const { return max_price_; }
 
 private:
+    // 32 bytes on 64-bit targets: two nodes per cache line, no padding.
     struct OrderNode {
-        Order      order;
+        OrderId    id{};
+        Quantity   qty{};
         OrderNode* prev{};
         OrderNode* next{};
     };
+    static_assert(sizeof(OrderNode) <= 4 * sizeof(void*), "OrderNode should stay compact");
 
     struct Level {
         OrderNode* head{};

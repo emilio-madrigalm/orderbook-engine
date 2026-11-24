@@ -116,7 +116,7 @@ OrderBook::OrderBook(Price min_price, Price max_price)
 
 OrderBook::OrderNode* OrderBook::new_node(const Order& order) {
     void* mem = arena_.allocate(sizeof(OrderNode));
-    return ::new (mem) OrderNode{order, nullptr, nullptr};
+    return ::new (mem) OrderNode{order.id, order.qty, nullptr, nullptr};
 }
 
 void OrderBook::free_node(OrderNode* node) noexcept {
@@ -179,18 +179,18 @@ void OrderBook::match(Side incoming_side, Order& incoming, bool is_limit,
         Level& queue = levels[tick];
         while (incoming.qty > 0 && !queue.empty()) {
             OrderNode*     resting = queue.head;  // oldest order at this price
-            const Quantity fill    = std::min(incoming.qty, resting->order.qty);
+            const Quantity fill    = std::min(incoming.qty, resting->qty);
 
             if (buying) {
-                trades.push_back(Trade{incoming.id, resting->order.id, level_price, fill});
+                trades.push_back(Trade{incoming.id, resting->id, level_price, fill});
             } else {
-                trades.push_back(Trade{resting->order.id, incoming.id, level_price, fill});
+                trades.push_back(Trade{resting->id, incoming.id, level_price, fill});
             }
 
             incoming.qty -= fill;
-            resting->order.qty -= fill;
-            if (resting->order.qty == 0) {
-                index_.erase(resting->order.id);
+            resting->qty -= fill;
+            if (resting->qty == 0) {
+                index_.erase(resting->id);
                 unlink(queue, resting);
                 free_node(resting);
             }
@@ -274,15 +274,16 @@ Status OrderBook::modify(OrderId id, Quantity new_qty) {
     if (found == nullptr) return Status::UnknownId;
 
     OrderNode* existing = found->node;
-    if (new_qty <= existing->order.qty) {
-        existing->order.qty = new_qty;  // reducing keeps queue position
+    if (new_qty <= existing->qty) {
+        existing->qty = new_qty;  // reducing keeps queue position
         return Status::Ok;
     }
 
     // Increasing qty loses time priority: cancel and re-rest at the back of the level.
+    // Side and price come from the locator, read before cancel() invalidates it.
     // The order was resting, so the book was not crossed at its price: no trades possible.
-    Order replacement = existing->order;
-    replacement.qty   = new_qty;
+    // Order::timestamp is not stored in the book, so the re-rested order carries 0.
+    const Order replacement{id, found->side, price_of(found->tick), new_qty, 0};
     cancel(id);
     rest(replacement);
     return Status::Ok;
@@ -307,7 +308,7 @@ std::vector<LevelInfo> OrderBook::depth(Side side, std::size_t n) const {
     std::vector<LevelInfo> out;
     auto total_at = [](const Level& level) {
         Quantity total = 0;
-        for (const OrderNode* o = level.head; o != nullptr; o = o->next) total += o->order.qty;
+        for (const OrderNode* o = level.head; o != nullptr; o = o->next) total += o->qty;
         return total;
     };
 
