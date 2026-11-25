@@ -27,3 +27,9 @@ jobs:
         env:
           OB_BUILD_DIR: build
         run: python3 -m unittest discover -s python/tests -v
+
+      - name: Install Icarus Verilog + Verilator (FPGA sim)
+        run: sudo apt-get install -y --no-install-recommends iverilog verilator
+
+      - name: FPGA parser vs C++ model
+        run: fpga/sim.sh --events 20000 --build-dir build

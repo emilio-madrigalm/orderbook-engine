@@ -6,6 +6,7 @@ A C++20 limit order book with price-time priority matching, tuned over five meas
 - **Correctness:** unit and edge-case tests, plus a property test that replays random streams through the book and through a deliberately naive reference book and requires identical trades and depth. ASan/UBSan clean.
 - **Performance:** every optimization round was benchmarked against the round before it on the same stream, and kept only if it measured faster on at least one of the two workloads. Numbers below.
 - **Backtester:** an inventory-skewed market maker, simulated with order latency, queue position, fees, PnL and drawdown.
+- **FPGA message parser:** a SystemVerilog decoder/validator for a 32-byte binary version of the event stream, one message per clock, checked bit-for-bit against a C++ reference model in simulation.
 
 ## Quick start
 
@@ -49,7 +50,9 @@ flowchart LR
 | `src/event.*`, `src/generator.*` | CSV event schema (`ts_ns,type,id,side,price,qty`) and a seeded generator: Poisson arrivals, random-walk mid, two profiles (`default`, `deep`). |
 | `src/replayer.*` | Replays events through the book, writes trades and depth snapshots as CSV. |
 | `bench/bench.cpp` | `ob_bench`: throughput and per-event latency. |
-| `tests/` | GoogleTest: unit, edge-case, property test vs `reference_book.hpp`, allocator, price band, id index, generator, replayer. |
+| `src/wire.*` | 32-byte binary message format, encoder, and `decode()`, the reference model for the FPGA parser (`ob_wire` CLI). |
+| `fpga/` | `msg_parser.sv`, its testbench, `sim.sh` (simulate vs the C++ model) and `synth.sh` (Yosys + nextpnr report). |
+| `tests/` | GoogleTest: unit, edge-case, property test vs `reference_book.hpp`, allocator, price band, id index, generator, replayer, wire format. |
 | `python/` | `replay.py`, `strategy.py`, `backtest.py`, `plots.py`, and their tests. |
 | `scripts/` | `run_all.sh` (everything), `bench_rounds.sh` (re-measures every round). |
 
@@ -147,6 +150,22 @@ What this shows is how much the result depends on the fill model, not that the s
 ![PnL and position over time](docs/img/pnl_inventory.png)
 
 Reproduce: `scripts/run_all.sh`, or `python3 python/backtest.py --events out/events.csv --out-dir out [--trade-through-only] [--fee 0.2] [--latency-ns 50000]`.
+
+## FPGA message parser
+
+The first step of a hardware feed handler: take a binary message off the wire, check it, and hand the fields on. `fpga/rtl/msg_parser.sv` reads one 32-byte message per clock from a 256-bit bus (format in `src/wire.hpp`), checks type, side, price band, quantity and reserved bytes, and outputs the fields with an error code plus per-type and error counters. Two pipeline stages, so 2 cycles of latency, no backpressure (a market-data feed cannot be paused), and input bubbles are allowed on any cycle.
+
+**Verification.** `ob::decode()` in C++ is the reference model. `fpga/sim.sh` encodes a generated stream with `ob_wire`, corrupts one random byte in every 50th message, and puts a fixed set of boundary cases first (exact price bounds, every error code). Then it runs the Icarus Verilog testbench with random input gaps and requires the hardware output to match `ob_wire decode` line for line, along with the counters. On 100,037 messages (743 invalid) the output is identical, and the testbench sees exactly 2 cycles of latency on every message. Four hand-made RTL bugs (dropped zero-price check, dropped rule in the error flag, wrong error code, dropped reserved check) each fail the run. Verilator `-Wall` lint is clean.
+
+**Synthesis** (`fpga/synth.sh`; tool reports only, no board). Lattice iCE40 HX8K, Yosys + nextpnr: 670 logic cells (8% of the device). Post-route maximum clock is 146 to 157 MHz across five placement seeds, i.e. about 146 M messages/s at one message per clock. The parser's ~660 I/O bits do not fit on the chip's pins, so `timing_wrap.sv` drives it from a shift register and folds the outputs into a parity bit, only so place-and-route has real paths to time. Two changes took Fmax from about 114 MHz to this: since the band is 1 to 2^17−1, "price ≤ max" becomes "no bit above 16 is set" instead of a 32-bit compare, and the counters' enable reads a registered all-ok bit instead of the output of the error priority encoder.
+
+```bash
+sudo apt install iverilog verilator yosys nextpnr-ice40
+fpga/sim.sh       # needs a build (ob_gen, ob_wire)
+fpga/synth.sh
+```
+
+Not done: no real network interface (Ethernet/UDP framing), no order book in hardware, and nothing has run on a physical board.
 
 ## Simplifications and limitations
 

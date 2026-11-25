@@ -25,11 +25,17 @@ if(NOT MSVC)
   target_compile_options(orderbook PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
-# Event schema (CSV) + synthetic generator
-add_library(obdata src/event.cpp src/generator.cpp src/replayer.cpp)
+# Event schema (CSV + 32-byte wire format) + synthetic generator
+add_library(obdata src/event.cpp src/generator.cpp src/replayer.cpp src/wire.cpp)
 target_link_libraries(obdata PUBLIC orderbook)
 if(NOT MSVC)
   target_compile_options(obdata PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+add_executable(ob_wire src/wire_main.cpp)
+target_link_libraries(ob_wire PRIVATE obdata)
+if(NOT MSVC)
+  target_compile_options(ob_wire PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 add_executable(ob_gen src/gen_main.cpp)
@@ -118,3 +124,11 @@ if(NOT MSVC)
   target_compile_options(test_id_index PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 gtest_discover_tests(test_id_index)
+
+# Wire format (reference model for the FPGA parser)
+add_executable(test_wire tests/test_wire.cpp)
+target_link_libraries(test_wire PRIVATE obdata GTest::gtest_main)
+if(NOT MSVC)
+  target_compile_options(test_wire PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+gtest_discover_tests(test_wire)
