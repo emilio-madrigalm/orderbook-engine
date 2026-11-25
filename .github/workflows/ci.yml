@@ -20,6 +20,9 @@ jobs:
       - name: Test
         run: ctest --test-dir build --output-on-failure
 
+      - name: Install matplotlib (plots.py render tests)
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends python3-matplotlib
+
       - name: Python tests
         env:
           OB_BUILD_DIR: build

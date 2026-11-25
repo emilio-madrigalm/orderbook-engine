@@ -1,6 +1,7 @@
 // ob_bench: throughput and per-event latency of OrderBook on a generated stream.
 //
 //   ob_bench [--events N] [--seed S] [--warmup N] [--repeat R] [--pin CORE]
+//            [--profile default|deep] [--latency-hist PATH]
 //
 // Method:
 //   1. Generate the stream up front (not timed). Same seed, same stream.
@@ -9,9 +10,11 @@
 //      report the median run (min/max shown).
 //   4. Latency: one more replay with a clock read before and after every event.
 //      Subtract the measured clock-read overhead, then report p50/p99/p99.9/max.
+//      --latency-hist PATH also writes those samples as a CSV histogram
+//      (header "ns,count", one row per distinct value, ascending) for plots.py.
 //
 // Only Release builds run (NDEBUG). Exit code: 0 ok, 1 pinning failed,
-// 2 bad usage or non-Release build.
+// 2 bad usage or non-Release build, 3 histogram file could not be written.
 
 #include <algorithm>
 #include <chrono>
@@ -42,6 +45,7 @@ struct Options {
     std::size_t   repeat{3};
     int           pin_core{-1};  // -1: not pinned
     bool          deep{false};   // --profile deep: deeper-book stream
+    const char*   latency_hist{nullptr};  // --latency-hist: CSV output path
 };
 
 // Running totals. Also acts as the sink that stops the optimizer removing work.
@@ -126,6 +130,20 @@ std::uint64_t percentile(const std::vector<std::uint64_t>& sorted, double p) {
     return sorted[std::clamp<std::size_t>(rank, 1, sorted.size()) - 1];
 }
 
+// Writes sorted samples as "ns,count" rows (run-length). Returns false on I/O error.
+bool write_latency_hist(const char* path, const std::vector<std::uint64_t>& sorted) {
+    std::FILE* f = std::fopen(path, "w");
+    if (f == nullptr) return false;
+    bool ok = std::fputs("ns,count\n", f) >= 0;
+    for (std::size_t i = 0; ok && i < sorted.size();) {
+        std::size_t j = i;
+        while (j < sorted.size() && sorted[j] == sorted[i]) ++j;
+        ok = std::fprintf(f, "%llu,%zu\n", static_cast<unsigned long long>(sorted[i]), j - i) > 0;
+        i = j;
+    }
+    return (std::fclose(f) == 0) && ok;
+}
+
 bool pin_to_core(int core) {
 #ifdef __linux__
     cpu_set_t set;
@@ -141,7 +159,7 @@ bool pin_to_core(int core) {
 void usage() {
     std::fprintf(stderr,
                  "usage: ob_bench [--events N] [--seed S] [--warmup N] [--repeat R] [--pin CORE]\n"
-                 "                [--profile default|deep]\n");
+                 "                [--profile default|deep] [--latency-hist PATH]\n");
 }
 
 bool parse_args(int argc, char** argv, Options& opt) {
@@ -166,6 +184,8 @@ bool parse_args(int argc, char** argv, Options& opt) {
             } else {
                 return false;
             }
+        } else if (!std::strcmp(argv[i], "--latency-hist") && has_value) {
+            opt.latency_hist = argv[++i];
         } else {
             return false;
         }
@@ -256,5 +276,13 @@ int main(int argc, char** argv) {
                 static_cast<unsigned long long>(sink.trades),
                 static_cast<long long>(sink.traded_qty),
                 static_cast<unsigned long long>(sink.rejected));
+
+    if (opt.latency_hist != nullptr) {
+        if (!write_latency_hist(opt.latency_hist, samples)) {
+            std::fprintf(stderr, "ob_bench: could not write %s\n", opt.latency_hist);
+            return 3;
+        }
+        std::printf("histogram:  %s\n", opt.latency_hist);
+    }
     return 0;
 }
