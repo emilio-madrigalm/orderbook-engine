@@ -25,8 +25,8 @@ if(NOT MSVC)
   target_compile_options(orderbook PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
-# Event schema (CSV + 32-byte wire format) + synthetic generator
-add_library(obdata src/event.cpp src/generator.cpp src/replayer.cpp src/wire.cpp)
+# Event schema (CSV + 32-byte wire format), ITCH 5.0 converter, synthetic generator
+add_library(obdata src/event.cpp src/generator.cpp src/replayer.cpp src/wire.cpp src/itch.cpp)
 target_link_libraries(obdata PUBLIC orderbook)
 if(NOT MSVC)
   target_compile_options(obdata PRIVATE -Wall -Wextra -Wpedantic)
@@ -36,6 +36,12 @@ add_executable(ob_wire src/wire_main.cpp)
 target_link_libraries(ob_wire PRIVATE obdata)
 if(NOT MSVC)
   target_compile_options(ob_wire PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+add_executable(ob_itch src/itch_main.cpp)
+target_link_libraries(ob_itch PRIVATE obdata)
+if(NOT MSVC)
+  target_compile_options(ob_itch PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 add_executable(ob_gen src/gen_main.cpp)
@@ -132,3 +138,11 @@ if(NOT MSVC)
   target_compile_options(test_wire PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 gtest_discover_tests(test_wire)
+
+# Nasdaq ITCH 5.0 converter
+add_executable(test_itch tests/test_itch.cpp)
+target_link_libraries(test_itch PRIVATE obdata GTest::gtest_main)
+if(NOT MSVC)
+  target_compile_options(test_itch PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+gtest_discover_tests(test_itch)

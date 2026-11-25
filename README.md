@@ -6,6 +6,7 @@ A C++20 limit order book with price-time priority matching, tuned over five meas
 - **Correctness:** unit and edge-case tests, plus a property test that replays random streams through the book and through a deliberately naive reference book and requires identical trades and depth. ASan/UBSan clean.
 - **Performance:** every optimization round was benchmarked against the round before it on the same stream, and kept only if it measured faster on at least one of the two workloads. Numbers below.
 - **Backtester:** an inventory-skewed market maker, simulated with order latency, queue position, fees, PnL and drawdown.
+- **Real data:** a full Nasdaq trading day of AAPL (2.1 M events from the exchange's own ITCH feed) replayed through the book: 97.7% of Nasdaq's executions are reproduced exactly, and the misses trace back to one cause, explained below.
 - **FPGA message parser:** a SystemVerilog decoder/validator for a 32-byte binary version of the event stream, one message per clock, checked bit-for-bit against a C++ reference model in simulation.
 
 ## Quick start
@@ -50,10 +51,11 @@ flowchart LR
 | `src/event.*`, `src/generator.*` | CSV event schema (`ts_ns,type,id,side,price,qty`) and a seeded generator: Poisson arrivals, random-walk mid, two profiles (`default`, `deep`). |
 | `src/replayer.*` | Replays events through the book, writes trades and depth snapshots as CSV. |
 | `bench/bench.cpp` | `ob_bench`: throughput and per-event latency. |
+| `src/itch.*` | Nasdaq TotalView-ITCH 5.0 parser: one symbol's messages to our event stream, plus the book rebuilt straight from the feed (`ob_itch` CLI). |
 | `src/wire.*` | 32-byte binary message format, encoder, and `decode()`, the reference model for the FPGA parser (`ob_wire` CLI). |
 | `fpga/` | `msg_parser.sv`, its testbench, `sim.sh` (simulate vs the C++ model) and `synth.sh` (Yosys + nextpnr report). |
-| `tests/` | GoogleTest: unit, edge-case, property test vs `reference_book.hpp`, allocator, price band, id index, generator, replayer, wire format. |
-| `python/` | `replay.py`, `strategy.py`, `backtest.py`, `plots.py`, and their tests. |
+| `tests/` | GoogleTest: unit, edge-case, property test vs `reference_book.hpp`, allocator, price band, id index, generator, replayer, wire format, ITCH converter. |
+| `python/` | `replay.py`, `strategy.py`, `backtest.py`, `plots.py`, `itch_check.py` (real-data check), and their tests. |
 | `scripts/` | `run_all.sh` (everything), `bench_rounds.sh` (re-measures every round). |
 
 **Matching rules.** Best price first, then arrival order within a price. Trades print at the resting order's price. A market order matches until filled or the other side is empty and never rests. Reducing an order's quantity keeps its place in the queue; increasing it sends it to the back. Limit prices must lie inside the book's tick band (default 1 to 131071 ticks) or they are rejected with `PriceOutOfBand`.
@@ -151,6 +153,35 @@ What this shows is how much the result depends on the fill model, not that the s
 
 Reproduce: `scripts/run_all.sh`, or `python3 python/backtest.py --events out/events.csv --out-dir out [--trade-through-only] [--fee 0.2] [--latency-ns 50000]`.
 
+## Real data: one Nasdaq day
+
+The synthetic generator cannot show whether the book matches the way a real exchange does. Nasdaq publishes sample days of TotalView-ITCH 5.0, the binary feed it sends to trading firms: every displayed order's add, execution, cancel, delete and replace, with the order's reference number and a nanosecond timestamp. The file used here is Thursday 30 January 2020 (5.6 GB compressed, 423,285,709 messages, all stocks), from Nasdaq's public sample directory.
+
+**Method.** `ob_itch` streams the file once and keeps one symbol (AAPL: 2,008,972 messages, 2,144,609 events after conversion). Adds, cancels, deletes and replaces map onto our events directly. Each execution becomes a market order on the opposite side, so the C++ book has to decide which resting order fills; Nasdaq's message names the order it actually filled. Alongside, `ob_itch` rebuilds the book straight from the messages. `itch_check.py` replays the events through `ob_replay` and compares:
+
+- **fills:** for each of the 55,168 executions, the same resting order at the same price in a single trade;
+- **depth:** the top 5 levels per side after every one of the 2,144,609 events, against the rebuilt book.
+
+| | Compared | Identical | |
+|---|---:|---:|---:|
+| Executions, 04:00 to 09:30 (pre-market) | 2,240 | 2,240 | 100% |
+| Executions, 09:30:00 to 09:30:01 | 17 | 17 | 100% |
+| Executions, 09:30 to 16:00 | 52,306 | 51,038 | 97.58% |
+| Executions, 16:00 to 20:00 (after hours) | 605 | 605 | 100% |
+| **All executions** | **55,168** | **53,900** | **97.70%** |
+| Top-5 depth after each event | 2,144,609 | 2,137,368 | 99.66% |
+
+**Where the 1,268 misses come from.** All of them fall in regular hours, in bursts. In the minute after the open, 24,112 AAPL orders appear in the feed with reference numbers *older* than orders already resting, in batches of about 90 per timestamp. They were entered earlier and released into the book after the opening cross. The fills show Nasdaq queuing them by that original entry, ahead of orders that reached the feed first. The C++ book queues by arrival, the only order the feed shows directly, so it fills the other order at that price. 859 of the misses involve one of these released orders directly. The other 409 are knock-on effects: once a different order has filled, the two books hold different orders at that level until those orders leave. The same divergence accounts for the 20 rejected events (Nasdaq cancels an order our book already filled) and 15 trades Nasdaq did not have. Pre-market, after hours and the 09:30:00 second match completely.
+
+Not modelled: the 227 executions at a price other than the order's own (the opening and closing crosses) are applied as reductions of the named order, since the book has no auction. Hidden and cross trades (15,116) do not change the displayed book and are only counted. 34 adds at sub-cent prices are skipped along with their follow-ups.
+
+```bash
+mkdir -p ~/itch && curl -L -C - -o ~/itch/01302020.NASDAQ_ITCH50.gz \
+  "https://emi.nasdaq.com/ITCH/Nasdaq%20ITCH/01302020.NASDAQ_ITCH50.gz"   # 5.6 GB, keep it outside the repo
+zcat ~/itch/01302020.NASDAQ_ITCH50.gz | build/ob_itch --symbol AAPL --out-dir out/itch-aapl   # ~5 min, zcat-bound
+python3 python/itch_check.py --dir out/itch-aapl --build-dir build                            # ~5 s, writes itch_check.json
+```
+
 ## FPGA message parser
 
 The first step of a hardware feed handler: take a binary message off the wire, check it, and hand the fields on. `fpga/rtl/msg_parser.sv` reads one 32-byte message per clock from a 256-bit bus (format in `src/wire.hpp`), checks type, side, price band, quantity and reserved bytes, and outputs the fields with an error code plus per-type and error counters. Two pipeline stages, so 2 cycles of latency, no backpressure (a market-data feed cannot be paused), and input bubbles are allowed on any cycle.
@@ -176,7 +207,7 @@ The backtester's results are optimistic, mainly because of the first point:
 - **Queue position is approximated** from aggregated depth: a new order joins the back of its level, and when the level shrinks the cancels are assumed to be ahead of us (optimistic). The trade-through-only setting removes this assumption.
 - **Passive fills only.** An order that would cross the book on arrival is dropped, never filled as a taker.
 - **Fixed latency** for every order action, no jitter. PnL is marked to the mid with no exit cost.
-- **Synthetic data only.** The generator is a random walk with Poisson arrivals; it has no intraday pattern, no volatility clustering and no real queue dynamics.
+- **Synthetic data for the backtest.** The book itself is checked on a real Nasdaq day (above), but the strategy is only backtested on generated flow. The generator is a random walk with Poisson arrivals; it has no intraday pattern, no volatility clustering and no real queue dynamics.
 - **Book limits:** fixed tick band chosen at construction; resting order timestamps are not stored (the book never reads them); one instrument; single-threaded.
 
 ## What I learned
